@@ -10,7 +10,7 @@ import EphemeralView from './pages/EphemeralView';
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-[#0a0a0f]">
+    <div className="min-h-screen bg-[#fbfbf8]">
       <Navbar />
       <Routes>
         <Route path="/" element={<Landing />} />

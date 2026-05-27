@@ -9,49 +9,54 @@ export default function Landing() {
   return (
     <div className="min-h-screen">
       {/* Hero */}
-      <section className="relative pt-32 pb-20 px-4 sm:px-6 overflow-hidden">
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-[120px] animate-glow-pulse" />
-        
-        <div className="max-w-4xl mx-auto text-center relative">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] border border-white/[0.06] text-xs font-medium text-gray-400 mb-8 animate-fade-in-up">
-            <Zap size={14} className="text-indigo-400" />
-            Share payment info instantly
-          </div>
-          
-          <h1 className="text-5xl sm:text-7xl font-black font-[Space_Grotesk] tracking-tight leading-[1.1] mb-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+      <section className="pt-36 pb-20 px-4 sm:px-6">
+        <div className="max-w-3xl mx-auto text-center">
+          <div className="wordmark text-2xl sm:text-3xl mb-6 animate-fade-in-up">Tfke.id</div>
+
+          <h1
+            className="display text-4xl sm:text-6xl leading-[1.05] mb-6 text-[#15161a] animate-fade-in-up"
+            style={{ animationDelay: '0.1s' }}
+          >
             Your payment info,<br />
-            <span className="gradient-text">one link away</span>
+            <span className="gradient-text">one link away.</span>
           </h1>
-          
-          <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-            Create a personal page with all your payment details. Share one link. 
-            Others copy with a single click. No more typing back and forth.
+
+          <p
+            className="text-lg text-[#5f6066] max-w-xl mx-auto mb-9 leading-relaxed animate-fade-in-up"
+            style={{ animationDelay: '0.2s', fontFamily: 'var(--font-sans)' }}
+          >
+            Put your bank and e-wallet details on one page. Share the link.
+            Others copy with a single tap — no more typing it out.
           </p>
-          
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-            <Link to="/create" className="flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold hover:shadow-xl hover:shadow-indigo-500/25 transition-all">
+
+          <div
+            className="flex flex-col sm:flex-row items-center justify-center gap-3 animate-fade-in-up"
+            style={{ animationDelay: '0.3s', fontFamily: 'var(--font-sans)' }}
+          >
+            <Link to="/create" className="btn-primary flex items-center gap-2 px-7 py-3.5 rounded-xl">
               Create now — no account
               <ArrowRight size={18} />
             </Link>
-            <Link to="/register" className="flex items-center gap-2 px-8 py-4 rounded-2xl glass text-gray-300 font-medium hover:bg-white/[0.08] transition-all">
+            <Link to="/register" className="btn-ghost flex items-center gap-2 px-7 py-3.5 rounded-xl">
               Sign in to keep &amp; edit
             </Link>
           </div>
-          <p className="text-xs text-gray-500 mt-4">Instant link, no email — expires in 3 days. Sign in for a permanent, editable page.</p>
+          <p className="label-mono mt-5">Instant link · no email · expires in 3 days</p>
         </div>
       </section>
+      <div className="max-w-5xl mx-auto px-6"><hr className="rule" /></div>
 
       {/* Platforms */}
       <section className="py-16 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto">
-          <p className="text-center text-sm text-gray-500 mb-8 animate-fade-in-up">Supported platforms</p>
+          <p className="label-mono text-center mb-8 animate-fade-in-up">Supported platforms</p>
           <div className="flex flex-wrap justify-center gap-4">
             {featuredPlatforms.map((p, i) => (
               <div key={p.id} className="animate-fade-in-up" style={{ animationDelay: `${i * 0.05}s` }}>
                 <PlatformIcon platformId={p.id} size={44} />
               </div>
             ))}
-            <div className="w-11 h-11 rounded-xl bg-white/5 flex items-center justify-center text-xs text-gray-500 font-medium animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+            <div className="w-11 h-11 rounded-xl card flex items-center justify-center text-xs text-[#5f6066] font-medium animate-fade-in-up" style={{ animationDelay: '0.4s', fontFamily: 'var(--font-sans)' }}>
               +6
             </div>
           </div>
@@ -61,23 +66,24 @@ export default function Landing() {
       {/* Features */}
       <section className="py-20 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold font-[Space_Grotesk] mb-4">How it works</h2>
-            <p className="text-gray-400">Three simple steps to share your payment info</p>
+          <div className="text-center mb-14">
+            <h2 className="display text-3xl sm:text-4xl mb-3 text-[#15161a]">How it works</h2>
+            <p className="text-[#5f6066]" style={{ fontFamily: 'var(--font-sans)' }}>Three steps to share your payment info</p>
           </div>
-          
-          <div className="grid sm:grid-cols-3 gap-6">
+
+          <div className="grid sm:grid-cols-3 gap-5">
             {[
-              { icon: Shield, title: 'Create Account', desc: 'Sign up and set up your profile in seconds. No email verification needed.' },
-              { icon: Copy, title: 'Add Your Info', desc: 'Add payment details for any platform. Username, phone, account number.' },
-              { icon: Globe, title: 'Share Link', desc: 'Share your personal link. Others click and copy instantly.' },
+              { icon: Shield, n: '001', title: 'Create', desc: 'Add your bank and e-wallet details. No account needed for a quick link.' },
+              { icon: Copy, n: '002', title: 'Encrypt', desc: 'Your details are encrypted in your browser before they ever leave it.' },
+              { icon: Globe, n: '003', title: 'Share', desc: 'Send the link. Others open it and copy your details in one tap.' },
             ].map((f, i) => (
-              <div key={i} className="glass rounded-3xl p-8 text-center hover:bg-white/[0.05] transition-all animate-fade-in-up" style={{ animationDelay: `${i * 0.1}s` }}>
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-violet-500/20 flex items-center justify-center mx-auto mb-6">
-                  <f.icon size={24} className="text-indigo-400" />
+              <div key={i} className="card rounded-2xl p-7 animate-fade-in-up" style={{ animationDelay: `${i * 0.08}s` }}>
+                <div className="flex items-center justify-between mb-5">
+                  <f.icon size={22} className="text-[#2d4bff]" />
+                  <span className="label-mono">FIG.{f.n}</span>
                 </div>
-                <h3 className="text-lg font-bold mb-3">{f.title}</h3>
-                <p className="text-sm text-gray-400 leading-relaxed">{f.desc}</p>
+                <h3 className="display text-lg mb-2 text-[#15161a]">{f.title}</h3>
+                <p className="text-sm text-[#5f6066] leading-relaxed" style={{ fontFamily: 'var(--font-sans)' }}>{f.desc}</p>
               </div>
             ))}
           </div>
@@ -86,29 +92,23 @@ export default function Landing() {
 
       {/* CTA */}
       <section className="py-20 px-4 sm:px-6">
-        <div className="max-w-3xl mx-auto glass rounded-3xl p-10 sm:p-16 text-center relative overflow-hidden">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[200px] bg-indigo-500/10 rounded-full blur-[80px]" />
-          <div className="relative">
-            <h2 className="text-3xl sm:text-4xl font-bold font-[Space_Grotesk] mb-4">Ready to simplify?</h2>
-            <p className="text-gray-400 mb-8 max-w-lg mx-auto">Join others who stopped typing payment details over and over again.</p>
-            <Link to="/register" className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold hover:shadow-xl hover:shadow-indigo-500/25 transition-all">
-              Get Started Free
-              <ArrowRight size={18} />
-            </Link>
-          </div>
+        <div className="max-w-3xl mx-auto card rounded-2xl p-10 sm:p-14 text-center">
+          <h2 className="display text-3xl sm:text-4xl mb-3 text-[#15161a]">Ready to simplify?</h2>
+          <p className="text-[#5f6066] mb-8 max-w-lg mx-auto" style={{ fontFamily: 'var(--font-sans)' }}>
+            Stop typing payment details over and over again.
+          </p>
+          <Link to="/create" className="btn-primary inline-flex items-center gap-2 px-7 py-3.5 rounded-xl">
+            Create your link
+            <ArrowRight size={18} />
+          </Link>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-4 sm:px-6 border-t border-white/[0.06]">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
-              <Zap size={14} className="text-white" />
-            </div>
-            <span className="font-bold font-[Space_Grotesk]">Tfke.id</span>
-          </div>
-          <p className="text-sm text-gray-500">Share payment info, made simple.</p>
+      <footer className="py-8 px-4 sm:px-6 border-t border-[rgba(20,21,26,0.10)]">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+          <span className="wordmark text-base">Tfke.id</span>
+          <p className="label-mono">Share payment info, made simple.</p>
         </div>
       </footer>
     </div>

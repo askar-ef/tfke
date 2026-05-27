@@ -53,7 +53,7 @@ export default function EphemeralView() {
       <Centered>
         This page has expired — ephemeral links last 3 days.
         <div className="mt-4">
-          <a href="/create" className="text-indigo-400 underline">Create your own</a>
+          <a href="/create" className="text-[#2d4bff] underline underline-offset-2">Create your own</a>
         </div>
       </Centered>
     );
@@ -62,25 +62,27 @@ export default function EphemeralView() {
   // state === 'ok' — render decrypted fields as inert text (never as links).
   const infos = Array.isArray(payload?.infos) ? payload.infos : [];
   return (
-    <div className="max-w-xl mx-auto pt-24 px-4" data-testid="ephemeral-view">
-      <h1 className="text-2xl font-bold">{String(payload?.displayName || 'Payment info')}</h1>
-      <p className="text-gray-500 text-sm mb-6">Shared payment info · expires in 3 days</p>
-      <div className="space-y-3">
+    <div className="max-w-xl mx-auto pt-28 px-6" data-testid="ephemeral-view">
+      <div className="label-mono mb-3">FIG · shared payment info</div>
+      <h1 className="display text-3xl">{String(payload?.displayName || 'Payment info')}</h1>
+      <p className="text-[#5f6066] text-sm mb-6">Expires in 3 days · decrypted in your browser</p>
+      <hr className="rule mb-6" />
+      <div className="space-y-2">
         {infos.map((info, i) => {
           const p = getPlatform(info?.platformId);
           return (
-            <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
+            <div key={i} className="flex items-center gap-3 p-3.5 rounded-xl card">
               <span
-                className="w-9 h-9 rounded-lg flex items-center justify-center text-xs font-bold text-white shrink-0"
+                className="w-9 h-9 rounded-md flex items-center justify-center text-[11px] font-bold text-white shrink-0 mono"
                 style={{ backgroundColor: p.color }}
               >
-                {String(p.name).slice(0, 2)}
+                {String(p.name).slice(0, 2).toUpperCase()}
               </span>
               <div className="min-w-0">
-                <div className="text-sm font-medium">{p.name}</div>
-                <div className="text-sm text-gray-300 break-all">{String(info?.value ?? '')}</div>
+                <div className="text-sm font-medium" style={{ fontFamily: 'var(--font-sans)' }}>{p.name}</div>
+                <div className="text-[15px] mono break-all">{String(info?.value ?? '')}</div>
                 {info?.accountName ? (
-                  <div className="text-xs text-gray-500">a/n {String(info.accountName)}</div>
+                  <div className="text-xs text-[#9a9ba1]">a/n {String(info.accountName)}</div>
                 ) : null}
               </div>
             </div>
@@ -93,7 +95,7 @@ export default function EphemeralView() {
 
 function Centered({ children }) {
   return (
-    <div className="max-w-md mx-auto pt-32 px-4 text-center text-gray-300" data-testid="view-state">
+    <div className="max-w-md mx-auto pt-32 px-6 text-center text-[#5f6066]" data-testid="view-state">
       {children}
     </div>
   );

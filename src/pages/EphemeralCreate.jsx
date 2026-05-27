@@ -50,33 +50,35 @@ export default function EphemeralCreate() {
   if (link) return <EphemeralSuccess link={link} onDone={() => navigate('/')} />;
 
   const submitting = status === 'submitting';
+  const sans = { fontFamily: 'var(--font-sans)' };
 
   return (
-    <div className="max-w-xl mx-auto pt-24 px-4" data-testid="ephemeral-create">
-      <h1 className="text-2xl font-bold mb-1">Create a shareable page</h1>
-      <p className="text-gray-500 text-sm mb-6">
+    <div className="max-w-xl mx-auto pt-28 px-6" data-testid="ephemeral-create">
+      <div className="label-mono mb-3">FIG · create</div>
+      <h1 className="display text-3xl mb-2">Create a shareable page</h1>
+      <p className="text-[#5f6066] text-sm mb-7" style={sans}>
         Encrypted in your browser. No account, no email — the page disappears after 3 days.
       </p>
 
-      <form onSubmit={submit} className="space-y-5">
+      <form onSubmit={submit} className="space-y-5" style={sans}>
         <div>
-          <label className="block text-sm text-gray-400 mb-1">Display name (optional)</label>
+          <label className="label-mono block mb-1.5">Display name (optional)</label>
           <input
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
             placeholder="e.g. Askar"
-            className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm"
+            className="field w-full px-3 py-2.5 rounded-lg text-sm"
           />
         </div>
 
         {infos.map((info, i) => (
-          <div key={i} className="p-3 rounded-xl bg-white/[0.03] border border-white/10 space-y-2">
+          <div key={i} className="p-3.5 rounded-xl card space-y-2">
             <div className="flex gap-2">
               <select
                 value={info.platformId}
                 onChange={(e) => updateInfo(i, { platformId: e.target.value })}
                 aria-label="Platform"
-                className="px-2 py-2 rounded-lg bg-white/5 border border-white/10 text-sm"
+                className="field px-2 py-2.5 rounded-lg text-sm"
               >
                 {Object.keys(categoryLabels).map((cat) => (
                   <optgroup key={cat} label={categoryLabels[cat]}>
@@ -91,10 +93,10 @@ export default function EphemeralCreate() {
                 onChange={(e) => updateInfo(i, { value: e.target.value })}
                 placeholder="Account number / handle"
                 aria-label="Value"
-                className="flex-1 px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm"
+                className="field flex-1 px-3 py-2.5 rounded-lg text-sm mono"
               />
               {infos.length > 1 && (
-                <button type="button" onClick={() => removeInfo(i)} aria-label="Remove" className="px-2 text-red-400">
+                <button type="button" onClick={() => removeInfo(i)} aria-label="Remove" className="px-2 text-[#d23b3b]">
                   <Trash2 size={16} />
                 </button>
               )}
@@ -104,22 +106,18 @@ export default function EphemeralCreate() {
               onChange={(e) => updateInfo(i, { accountName: e.target.value })}
               placeholder="Account holder name (optional)"
               aria-label="Account name"
-              className="w-full px-3 py-2 rounded-lg bg-white/5 border border-white/10 text-sm"
+              className="field w-full px-3 py-2.5 rounded-lg text-sm"
             />
           </div>
         ))}
 
-        <button type="button" onClick={addInfo} className="flex items-center gap-1 text-sm text-indigo-400">
+        <button type="button" onClick={addInfo} className="flex items-center gap-1 text-sm text-[#2d4bff]">
           <Plus size={14} /> Add another
         </button>
 
-        {error && <p role="alert" className="text-red-400 text-sm">{error}</p>}
+        {error && <p role="alert" className="text-[#d23b3b] text-sm">{error}</p>}
 
-        <button
-          type="submit"
-          disabled={submitting}
-          className="w-full py-2.5 rounded-lg bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-medium text-sm disabled:opacity-50"
-        >
+        <button type="submit" disabled={submitting} className="btn-primary w-full py-3 rounded-lg text-sm">
           {submitting ? 'Encrypting…' : 'Create link'}
         </button>
       </form>
