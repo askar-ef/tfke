@@ -1,0 +1,9 @@
+# Netlify security headers. CSP is load-bearing for the zero-knowledge guarantee
+# (an XSS on the viewer would defeat client-side decryption), so scripts are 'self' only.
+# NOTE: connect-src must list the deployed tfke-be origin (must match VITE_API_URL).
+#       Update https://api.tfke.id below to your real API origin.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.tfke.id; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'
+  Referrer-Policy: no-referrer
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
