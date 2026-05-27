@@ -5,6 +5,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import PublicProfile from './pages/PublicProfile';
+import EphemeralCreate from './pages/EphemeralCreate';
+import EphemeralView from './pages/EphemeralView';
 
 export default function App() {
   return (
@@ -12,6 +14,8 @@ export default function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Landing />} />
+        <Route path="/create" element={<EphemeralCreate />} />
+        <Route path="/p/:token" element={<EphemeralView />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />

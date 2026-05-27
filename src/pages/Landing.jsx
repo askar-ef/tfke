@@ -29,14 +29,15 @@ export default function Landing() {
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-            <Link to="/register" className="flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold hover:shadow-xl hover:shadow-indigo-500/25 transition-all">
-              Create Your Page
+            <Link to="/create" className="flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold hover:shadow-xl hover:shadow-indigo-500/25 transition-all">
+              Create now — no account
               <ArrowRight size={18} />
             </Link>
-            <Link to="/u/askar" className="flex items-center gap-2 px-8 py-4 rounded-2xl glass text-gray-300 font-medium hover:bg-white/[0.08] transition-all">
-              See Example
+            <Link to="/register" className="flex items-center gap-2 px-8 py-4 rounded-2xl glass text-gray-300 font-medium hover:bg-white/[0.08] transition-all">
+              Sign in to keep &amp; edit
             </Link>
           </div>
+          <p className="text-xs text-gray-500 mt-4">Instant link, no email — expires in 3 days. Sign in for a permanent, editable page.</p>
         </div>
       </section>
 

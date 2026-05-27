@@ -20,3 +20,10 @@ export const categoryLabels = {
   ewallet: 'E-Wallet',
   bank: 'Bank Transfer',
 };
+
+// Safe lookup: the backend owns the platformId allowlist, this file owns the
+// display registry, and the two can drift — so an unknown id must render a
+// neutral fallback rather than crash.
+export function getPlatform(id) {
+  return platforms.find((p) => p.id === id) || { id, name: id || 'Unknown', color: '#6b7280', category: 'other' };
+}
