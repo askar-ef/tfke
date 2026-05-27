@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Zap, Copy, Check, ArrowLeft } from 'lucide-react';
+import { Copy, Check, ArrowLeft } from 'lucide-react';
 import InfoCard from '../components/InfoCard';
 import { getUser } from '../data/mockUsers';
+import { getPlatform } from '../data/platforms';
 
 export default function PublicProfile() {
   const { username } = useParams();
@@ -11,31 +12,26 @@ export default function PublicProfile() {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    const u = getUser(username);
-    setUser(u);
+    setUser(getUser(username));
     setLoading(false);
   }, [username]);
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-7 h-7 border-2 border-[#2d4bff] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4">
-        <div className="text-center">
-          <div className="w-20 h-20 rounded-2xl bg-white/[0.03] flex items-center justify-center mx-auto mb-6">
-            <Zap size={32} className="text-gray-600" />
-          </div>
-          <h1 className="text-2xl font-bold mb-2">User not found</h1>
-          <p className="text-gray-500 mb-6">This page does not exist</p>
-          <Link to="/" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 text-gray-300 hover:bg-white/10 transition-all">
-            <ArrowLeft size={16} />
-            Go Home
+      <div className="min-h-screen flex items-center justify-center px-4 text-center" style={{ fontFamily: 'var(--font-sans)' }}>
+        <div>
+          <h1 className="display text-2xl mb-2 text-[#15161a]">User not found</h1>
+          <p className="text-[#5f6066] mb-6">This page doesn’t exist.</p>
+          <Link to="/" className="btn-ghost inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm">
+            <ArrowLeft size={16} /> Go home
           </Link>
         </div>
       </div>
@@ -43,71 +39,72 @@ export default function PublicProfile() {
   }
 
   const handleCopyAll = async () => {
-    const text = user.infos.map(i => {
-      const platform = require('../data/platforms').platforms.find(p => p.id === i.platformId);
-      return `${platform?.name || i.platformId}: ${i.value}${i.accountName ? ` (${i.accountName})` : ''}`;
-    }).join('\n');
-    await navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    const text = user.infos
+      .map((i) => {
+        const platform = getPlatform(i.platformId);
+        return `${platform.name}: ${i.value}${i.accountName ? ` (${i.accountName})` : ''}`;
+      })
+      .join('\n');
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* clipboard blocked */
+    }
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 sm:px-6">
+    <div className="min-h-screen pt-28 pb-12 px-4 sm:px-6">
       <div className="max-w-2xl mx-auto">
-        {/* Header */}
-        <div className="glass rounded-3xl p-6 sm:p-8 mb-6 animate-fade-in-up">
+        <div className="label-mono mb-3">FIG · shared payment info</div>
+        <div className="card rounded-2xl p-6 sm:p-8 mb-6">
           <div className="flex items-center gap-5">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-2xl sm:text-3xl font-bold text-white shrink-0">
+            <div
+              className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl flex items-center justify-center text-2xl sm:text-3xl font-bold text-white shrink-0 mono"
+              style={{ backgroundColor: '#2d4bff' }}
+            >
               {user.avatar}
             </div>
             <div>
-              <h1 className="text-2xl font-bold font-[Space_Grotesk]">{user.displayName}</h1>
-              <p className="text-gray-500 text-sm">@{user.username}</p>
-              {user.bio && <p className="text-gray-400 text-sm mt-2">{user.bio}</p>}
+              <h1 className="display text-2xl text-[#15161a]">{user.displayName}</h1>
+              <p className="text-[#9a9ba1] text-sm mono">@{user.username}</p>
+              {user.bio && <p className="text-[#5f6066] text-sm mt-2" style={{ fontFamily: 'var(--font-sans)' }}>{user.bio}</p>}
             </div>
           </div>
 
           {user.infos.length > 0 && (
             <button
               onClick={handleCopyAll}
-              className={`mt-6 w-full py-3 rounded-xl font-medium text-sm transition-all flex items-center justify-center gap-2 ${
+              style={{ fontFamily: 'var(--font-sans)' }}
+              className={`mt-6 w-full py-3 rounded-lg font-medium text-sm transition-colors flex items-center justify-center gap-2 border ${
                 copied
-                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/20'
-                  : 'bg-white/5 text-gray-300 hover:bg-white/10 border border-white/[0.06]'
+                  ? 'bg-[#0a8f5b]/10 text-[#0a8f5b] border-[#0a8f5b]/20'
+                  : 'bg-white text-[#15161a] border-[rgba(20,21,26,0.12)] hover:border-[rgba(20,21,26,0.24)]'
               }`}
             >
               {copied ? <Check size={16} /> : <Copy size={16} />}
-              {copied ? 'All Copied!' : 'Copy All'}
+              {copied ? 'All copied!' : 'Copy all'}
             </button>
           )}
         </div>
 
-        {/* Payment Infos */}
-        <h2 className="text-lg font-bold mb-4 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-          Payment Infos
-        </h2>
+        <hr className="rule mb-6" />
 
         {user.infos.length === 0 ? (
-          <div className="glass rounded-3xl p-12 text-center animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-            <p className="text-gray-500">No payment info yet</p>
+          <div className="card rounded-2xl p-12 text-center text-[#9a9ba1]" style={{ fontFamily: 'var(--font-sans)' }}>
+            No payment info yet
           </div>
         ) : (
           <div className="space-y-3">
-            {user.infos.map((info, i) => (
-              <div key={info.id} className="animate-fade-in-up" style={{ animationDelay: `${i * 0.05}s` }}>
-                <InfoCard info={info} />
-              </div>
+            {user.infos.map((info) => (
+              <InfoCard key={info.id} info={info} />
             ))}
           </div>
         )}
 
-        {/* Footer */}
-        <div className="mt-12 text-center animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-          <Link to="/" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-300 transition-colors">
-            <div className="w-6 h-6 rounded-md bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
-              <Zap size={12} className="text-white" />
-            </div>
+        <div className="mt-12 text-center">
+          <Link to="/" className="label-mono hover:text-[#2d4bff] transition-colors">
             Powered by Tfke.id
           </Link>
         </div>

@@ -1,52 +1,46 @@
 import { useState } from 'react';
-import { Copy, Check, Share2 } from 'lucide-react';
+import { Copy, Check } from 'lucide-react';
 import PlatformIcon from './PlatformIcon';
-import { platforms } from '../data/platforms';
+import { getPlatform } from '../data/platforms';
 
 export default function InfoCard({ info, showLabel = true }) {
   const [copied, setCopied] = useState(false);
-  const platform = platforms.find(p => p.id === info.platformId);
+  const platform = getPlatform(info.platformId);
 
   const handleCopy = async () => {
-    const textToCopy = info.accountName
-      ? `${info.value} (${info.accountName})`
-      : info.value;
-    await navigator.clipboard.writeText(textToCopy);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    const textToCopy = info.accountName ? `${info.value} (${info.accountName})` : info.value;
+    try {
+      await navigator.clipboard.writeText(textToCopy);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* clipboard blocked */
+    }
   };
-
-  if (!platform) return null;
 
   return (
     <div
       onClick={handleCopy}
-      className="group relative glass glass-hover rounded-2xl p-4 cursor-pointer transition-all duration-300 hover:scale-[1.02] animate-fade-in-up"
-      style={{ animationDelay: `${Math.random() * 0.3}s` }}
+      className="group relative card card-hover rounded-xl p-4 cursor-pointer transition-colors"
+      style={{ fontFamily: 'var(--font-sans)' }}
     >
       <div className="flex items-center gap-4">
-        <PlatformIcon platformId={info.platformId} size={48} />
+        <PlatformIcon platformId={info.platformId} size={44} />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-sm">{platform.name}</span>
+            <span className="font-semibold text-sm text-[#15161a]">{platform.name}</span>
             {showLabel && info.label && (
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/5 text-gray-500">
-                {info.label}
-              </span>
+              <span className="label-mono px-1.5 py-0.5 rounded bg-[#f4f4f0]">{info.label}</span>
             )}
           </div>
-          <div className="font-mono text-lg font-bold mt-0.5 truncate">
-            {info.value}
-          </div>
-          {info.accountName && (
-            <div className="text-xs text-gray-500 mt-0.5">{info.accountName}</div>
-          )}
+          <div className="mono text-base font-semibold mt-0.5 truncate text-[#15161a]">{info.value}</div>
+          {info.accountName && <div className="text-xs text-[#9a9ba1] mt-0.5">a/n {info.accountName}</div>}
         </div>
-        <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
-          copied
-            ? 'bg-emerald-500/20 text-emerald-400'
-            : 'bg-white/5 text-gray-500 group-hover:bg-white/10 group-hover:text-white'
-        }`}>
+        <div
+          className={`w-10 h-10 rounded-lg flex items-center justify-center transition-colors ${
+            copied ? 'bg-[#0a8f5b]/10 text-[#0a8f5b]' : 'bg-[#f4f4f0] text-[#5f6066] group-hover:text-[#2d4bff]'
+          }`}
+        >
           {copied ? <Check size={18} /> : <Copy size={18} />}
         </div>
       </div>

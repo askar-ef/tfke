@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Zap, Eye, EyeOff, ArrowRight, Check } from 'lucide-react';
+import { Eye, EyeOff, ArrowRight } from 'lucide-react';
 import { createUser } from '../data/mockUsers';
 
 export default function Register() {
@@ -16,7 +16,6 @@ export default function Register() {
     e.preventDefault();
     setError('');
     setLoading(true);
-
     setTimeout(() => {
       if (username.length < 3) {
         setError('Username must be at least 3 characters');
@@ -31,83 +30,72 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-[120px]" />
-
-      <div className="relative w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center px-4" style={{ fontFamily: 'var(--font-sans)' }}>
+      <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center">
-              <Zap size={20} className="text-white" />
-            </div>
-            <span className="text-2xl font-bold font-[Space_Grotesk]">Tfke.id</span>
-          </Link>
-          <h1 className="text-2xl font-bold">Create account</h1>
-          <p className="text-gray-400 text-sm mt-2">Get your payment info page in seconds</p>
+          <Link to="/" className="wordmark text-2xl inline-block mb-6">Tfke.id</Link>
+          <h1 className="display text-2xl text-[#15161a]">Create account</h1>
+          <p className="text-[#5f6066] text-sm mt-2">Get your payment info page in seconds</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="glass rounded-3xl p-8 space-y-5">
+        <form onSubmit={handleSubmit} className="card rounded-2xl p-8 space-y-5">
           {error && (
-            <div className="px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+            <div className="px-4 py-3 rounded-lg bg-[#d23b3b]/10 border border-[#d23b3b]/20 text-[#d23b3b] text-sm">
               {error}
             </div>
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">Display Name</label>
+            <label className="label-mono block mb-2">Display name</label>
             <input
               type="text"
               value={displayName}
-              onChange={e => setDisplayName(e.target.value)}
+              onChange={(e) => setDisplayName(e.target.value)}
               placeholder="Your name"
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-indigo-500/50 focus:bg-white/[0.07] transition-all placeholder:text-gray-600"
+              className="field w-full px-4 py-3 rounded-lg text-sm"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">Username</label>
+            <label className="label-mono block mb-2">Username</label>
             <input
               type="text"
               value={username}
-              onChange={e => setUsername(e.target.value)}
+              onChange={(e) => setUsername(e.target.value)}
               placeholder="Choose a username"
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-indigo-500/50 focus:bg-white/[0.07] transition-all placeholder:text-gray-600"
+              className="field w-full px-4 py-3 rounded-lg text-sm"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-2">Password</label>
+            <label className="label-mono block mb-2">Password</label>
             <div className="relative">
               <input
                 type={showPass ? 'text' : 'password'}
                 value={password}
-                onChange={e => setPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
                 placeholder="Create password"
-                className="w-full px-4 py-3 pr-12 rounded-xl bg-white/5 border border-white/10 text-sm focus:outline-none focus:border-indigo-500/50 focus:bg-white/[0.07] transition-all placeholder:text-gray-600"
+                className="field w-full px-4 py-3 pr-12 rounded-lg text-sm"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPass(!showPass)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-white"
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-[#9a9ba1] hover:text-[#15161a]"
               >
                 {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-600 text-white font-semibold text-sm hover:shadow-lg hover:shadow-indigo-500/25 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-          >
-            {loading ? 'Creating...' : <><span>Create Account</span><ArrowRight size={16} /></>}
+          <button type="submit" disabled={loading} className="btn-primary w-full py-3 rounded-lg text-sm flex items-center justify-center gap-2">
+            {loading ? 'Creating…' : <><span>Create account</span><ArrowRight size={16} /></>}
           </button>
 
-          <p className="text-center text-sm text-gray-500">
-            Already have an account? <Link to="/login" className="text-indigo-400 hover:text-indigo-300">Login</Link>
+          <p className="text-center text-sm text-[#9a9ba1]">
+            Already have an account? <Link to="/login" className="text-[#2d4bff]">Login</Link>
           </p>
         </form>
       </div>
