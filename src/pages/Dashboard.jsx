@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Link2, ExternalLink, Trash2, Edit3 } from 'lucide-react';
+import { Plus, ExternalLink, Trash2, Edit3 } from 'lucide-react';
 import InfoCard from '../components/InfoCard';
 import AddInfoModal from '../components/AddInfoModal';
 import { addInfo, removeInfo, updateUser } from '../data/mockUsers';
@@ -15,10 +15,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     const u = localStorage.getItem('tfke_user');
-    if (!u) {
-      navigate('/login');
-      return;
-    }
+    if (!u) { navigate('/login'); return; }
     setUser(JSON.parse(u));
   }, [navigate]);
 
@@ -31,7 +28,6 @@ export default function Dashboard() {
     setCopiedLink(true);
     setTimeout(() => setCopiedLink(false), 2000);
   };
-
   const handleAddInfo = (info) => {
     const newInfo = addInfo(user.username, info);
     if (newInfo) {
@@ -40,7 +36,6 @@ export default function Dashboard() {
       localStorage.setItem('tfke_user', JSON.stringify(updated));
     }
   };
-
   const handleRemoveInfo = (infoId) => {
     if (removeInfo(user.username, infoId)) {
       const updated = { ...user, infos: user.infos.filter((i) => i.id !== infoId) };
@@ -48,7 +43,6 @@ export default function Dashboard() {
       localStorage.setItem('tfke_user', JSON.stringify(updated));
     }
   };
-
   const handleSaveBio = () => {
     updateUser(user.username, { bio });
     const updated = { ...user, bio };
@@ -57,120 +51,75 @@ export default function Dashboard() {
     setEditingBio(false);
   };
 
-  const sans = { fontFamily: 'var(--font-sans)' };
-
   return (
-    <div className="min-h-screen pt-28 pb-12 px-4 sm:px-6">
-      <div className="max-w-3xl mx-auto">
-        <div className="label-mono mb-3">FIG · your page</div>
+    <div className="max-w-3xl mx-auto px-5 sm:px-8 pt-24 pb-16">
+      <div className="tag">Fig. — your page</div>
 
-        {/* Profile header */}
-        <div className="card rounded-2xl p-6 sm:p-8 mb-6">
-          <div className="flex items-start gap-5">
-            <div
-              className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl flex items-center justify-center text-2xl sm:text-3xl font-bold text-white shrink-0 mono"
-              style={{ backgroundColor: '#2d4bff' }}
-            >
-              {user.avatar}
-            </div>
-            <div className="flex-1 min-w-0">
-              <h1 className="display text-2xl text-[#15161a]">{user.displayName}</h1>
-              <p className="text-[#9a9ba1] text-sm mono">@{user.username}</p>
-
-              {editingBio ? (
-                <div className="mt-3 flex gap-2" style={sans}>
-                  <input
-                    type="text"
-                    value={bio}
-                    onChange={(e) => setBio(e.target.value)}
-                    placeholder="Add a bio…"
-                    className="field flex-1 px-3 py-2 rounded-lg text-sm"
-                    autoFocus
-                  />
-                  <button onClick={handleSaveBio} className="btn-primary px-4 py-2 rounded-lg text-sm">Save</button>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2 mt-2" style={sans}>
-                  <p className="text-[#5f6066] text-sm">{user.bio || 'No bio yet'}</p>
-                  <button onClick={() => { setBio(user.bio || ''); setEditingBio(true); }} className="p-1 rounded hover:bg-black/[0.04] text-[#9a9ba1]">
-                    <Edit3 size={14} />
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Share link */}
-          <div className="mt-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-3" style={sans}>
-            <div className="flex-1 flex items-center gap-3 px-4 py-3 rounded-lg bg-[#f4f4f0] border border-[rgba(20,21,26,0.10)]">
-              <Link2 size={16} className="text-[#9a9ba1] shrink-0" />
-              <span className="text-sm text-[#5f6066] truncate mono">{publicUrl}</span>
-            </div>
-            <button
-              onClick={handleCopyLink}
-              className={`px-6 py-3 rounded-lg font-medium text-sm transition-colors flex items-center justify-center gap-2 border ${
-                copiedLink
-                  ? 'bg-[#0a8f5b]/10 text-[#0a8f5b] border-[#0a8f5b]/20'
-                  : 'bg-white text-[#15161a] border-[rgba(20,21,26,0.12)] hover:border-[rgba(20,21,26,0.24)]'
-              }`}
-            >
-              {copiedLink ? 'Copied!' : 'Copy link'}
-            </button>
-            <a
-              href={publicUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-4 py-3 rounded-lg bg-white text-[#5f6066] border border-[rgba(20,21,26,0.12)] hover:text-[#2d4bff] transition-colors flex items-center justify-center"
-            >
-              <ExternalLink size={18} />
-            </a>
-          </div>
+      <div className="flex items-start gap-4 mt-2">
+        <div className="w-14 h-14 border border-ink bg-white flex items-center justify-center pixel text-blue text-2xl shrink-0">
+          {String(user.avatar || user.displayName?.[0] || '?').toUpperCase()}
         </div>
-
-        {/* Stats */}
-        <div className="grid grid-cols-2 gap-4 mb-6" style={sans}>
-          <div className="card rounded-xl p-5">
-            <div className="display text-3xl text-[#15161a]">{user.infos.length}</div>
-            <div className="label-mono mt-1">Payment infos</div>
-          </div>
-          <div className="card rounded-xl p-5">
-            <div className="display text-3xl text-[#15161a]">{user.infos.length > 0 ? 'Active' : 'Empty'}</div>
-            <div className="label-mono mt-1">Page status</div>
-          </div>
+        <div className="flex-1 min-w-0">
+          <h1 className="head text-4xl leading-none">{user.displayName}</h1>
+          <p className="tag mt-1">@{user.username}</p>
+          {editingBio ? (
+            <div className="mt-3 flex gap-2">
+              <input value={bio} onChange={(e) => setBio(e.target.value)} placeholder="Add a bio…" className="field flex-1 px-3 py-2" autoFocus />
+              <button onClick={handleSaveBio} className="btn-primary px-4">Save</button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 mt-2">
+              <p className="serif text-[#44443f]">{user.bio || 'No bio yet'}</p>
+              <button onClick={() => { setBio(user.bio || ''); setEditingBio(true); }} className="text-[#8a8a82] hover:text-ink"><Edit3 size={14} /></button>
+            </div>
+          )}
         </div>
-
-        {/* Payment infos */}
-        <div className="flex items-center justify-between mb-4" style={sans}>
-          <h2 className="display text-lg text-[#15161a]">Your payment infos</h2>
-          <button onClick={() => setShowAdd(true)} className="btn-primary flex items-center gap-2 px-4 py-2 rounded-lg text-sm">
-            <Plus size={16} /> Add info
-          </button>
-        </div>
-
-        {user.infos.length === 0 ? (
-          <div className="card rounded-2xl p-12 text-center" style={sans}>
-            <h3 className="display text-lg mb-2 text-[#15161a]">No payment info yet</h3>
-            <p className="text-sm text-[#5f6066] mb-6">Add your first payment info to share with others</p>
-            <button onClick={() => setShowAdd(true)} className="btn-primary px-6 py-3 rounded-lg text-sm">
-              Add payment info
-            </button>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {user.infos.map((info) => (
-              <div key={info.id} className="group relative">
-                <InfoCard info={info} />
-                <button
-                  onClick={() => handleRemoveInfo(info.id)}
-                  className="absolute top-3 right-3 p-2 rounded-lg bg-[#d23b3b]/10 text-[#d23b3b] opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#d23b3b]/20"
-                >
-                  <Trash2 size={14} />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
+
+      {/* Share link */}
+      <div className="flex flex-col sm:flex-row gap-2 mt-6">
+        <div className="flex-1 flex items-center gap-2 px-3 py-2.5 border border-ink bg-white">
+          <span className="mono text-sm text-[#44443f] truncate">{publicUrl}</span>
+        </div>
+        <button onClick={handleCopyLink} className="btn-ghost px-5 py-2.5">{copiedLink ? 'Copied!' : 'Copy link'}</button>
+        <a href={publicUrl} target="_blank" rel="noopener noreferrer" className="btn-ghost px-3 py-2.5 flex items-center justify-center"><ExternalLink size={16} /></a>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-2 border border-ink mt-6">
+        <div className="p-5 border-r border-line-soft">
+          <div className="masthead text-3xl text-ink">{String(user.infos.length).padStart(2, '0')}</div>
+          <div className="tag mt-1">Payment infos</div>
+        </div>
+        <div className="p-5">
+          <div className="head text-3xl">{user.infos.length > 0 ? 'Active' : 'Empty'}</div>
+          <div className="tag mt-1">Page status</div>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between mt-7 mb-3">
+        <h2 className="head text-xl">Your payment infos</h2>
+        <button onClick={() => setShowAdd(true)} className="btn-primary flex items-center gap-1.5 px-4 py-2"><Plus size={14} /> Add info</button>
+      </div>
+
+      {user.infos.length === 0 ? (
+        <div className="figure p-10 text-center">
+          <h3 className="head text-lg mb-2">No payment info yet</h3>
+          <p className="tag mb-5">Add your first payment info to share with others</p>
+          <button onClick={() => setShowAdd(true)} className="btn-primary px-6 py-2.5">Add payment info</button>
+        </div>
+      ) : (
+        <div className="space-y-px">
+          {user.infos.map((info) => (
+            <div key={info.id} className="group relative">
+              <InfoCard info={info} />
+              <button onClick={() => handleRemoveInfo(info.id)} className="absolute top-2 right-2 p-1.5 bg-white border border-[#cc2b2b] text-[#cc2b2b] opacity-0 group-hover:opacity-100 transition-opacity">
+                <Trash2 size={13} />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
 
       {showAdd && <AddInfoModal onClose={() => setShowAdd(false)} onAdd={handleAddInfo} />}
     </div>

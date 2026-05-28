@@ -3,10 +3,8 @@ import { useParams } from 'react-router-dom';
 import { api } from '../lib/api';
 import { decryptPayload } from '../lib/webcrypto';
 import { getPlatform } from '../data/platforms';
+import PlatformIcon from '../components/PlatformIcon';
 
-// Viewer for an ephemeral page. The key comes from the URL fragment (never sent
-// to the server). Five outcomes: broken (missing/garbled fragment, no API call),
-// notfound (404), expired (410), decryptfail (wrong key/tampered), ok.
 export default function EphemeralView() {
   const { token } = useParams();
   const [state, setState] = useState('loading');
@@ -33,57 +31,44 @@ export default function EphemeralView() {
         if (!active) return;
         setPayload(obj);
         setState('ok');
-        // Strip the fragment from the address bar only AFTER a successful decrypt.
         window.history.replaceState(null, '', window.location.pathname);
       } catch {
         if (active) setState('decryptfail');
       }
     })();
-    return () => {
-      active = false;
-    };
+    return () => { active = false; };
   }, [token]);
 
-  if (state === 'loading') return <Centered>Decrypting…</Centered>;
-  if (state === 'broken')
-    return <Centered>This link is incomplete or broken. Ask the sender for the full link.</Centered>;
-  if (state === 'notfound') return <Centered>This page doesn’t exist.</Centered>;
+  if (state === 'loading') return <Centered tag="decrypting">Decrypting in your browser…</Centered>;
+  if (state === 'broken') return <Centered tag="error">This link is incomplete or broken. Ask the sender for the full link.</Centered>;
+  if (state === 'notfound') return <Centered tag="404">This page doesn’t exist.</Centered>;
   if (state === 'expired')
     return (
-      <Centered>
+      <Centered tag="410 · expired">
         This page has expired — ephemeral links last 3 days.
-        <div className="mt-4">
-          <a href="/create" className="text-[#2d4bff] underline underline-offset-2">Create your own</a>
-        </div>
+        <div className="mt-4"><a href="/create" className="text-blue underline underline-offset-4">Create your own</a></div>
       </Centered>
     );
-  if (state === 'decryptfail') return <Centered>This link can’t be opened (wrong or corrupted key).</Centered>;
+  if (state === 'decryptfail') return <Centered tag="key error">This link can’t be opened (wrong or corrupted key).</Centered>;
 
-  // state === 'ok' — render decrypted fields as inert text (never as links).
   const infos = Array.isArray(payload?.infos) ? payload.infos : [];
   return (
-    <div className="max-w-xl mx-auto pt-28 px-6" data-testid="ephemeral-view">
-      <div className="label-mono mb-3">FIG · shared payment info</div>
-      <h1 className="display text-3xl">{String(payload?.displayName || 'Payment info')}</h1>
-      <p className="text-[#5f6066] text-sm mb-6">Expires in 3 days · decrypted in your browser</p>
-      <hr className="rule mb-6" />
-      <div className="space-y-2">
+    <div className="max-w-2xl mx-auto px-5 sm:px-8 pt-24 pb-16" data-testid="ephemeral-view">
+      <div className="tag">Fig. — shared payment info</div>
+      <h1 className="head text-4xl mt-1">{String(payload?.displayName || 'Payment info')}</h1>
+      <p className="tag mt-1 mb-6">Expires in 3 days · decrypted in your browser</p>
+
+      <div className="figure">
+        <span className="fig-tag">Fig. 001</span>
         {infos.map((info, i) => {
           const p = getPlatform(info?.platformId);
           return (
-            <div key={i} className="flex items-center gap-3 p-3.5 rounded-xl card">
-              <span
-                className="w-9 h-9 rounded-md flex items-center justify-center text-[11px] font-bold text-white shrink-0 mono"
-                style={{ backgroundColor: p.color }}
-              >
-                {String(p.name).slice(0, 2).toUpperCase()}
-              </span>
+            <div key={i} className="flex items-center gap-4 p-4 border-b border-line-soft last:border-b-0">
+              <PlatformIcon platformId={info?.platformId} size={40} />
               <div className="min-w-0">
-                <div className="text-sm font-medium" style={{ fontFamily: 'var(--font-sans)' }}>{p.name}</div>
-                <div className="text-[15px] mono break-all">{String(info?.value ?? '')}</div>
-                {info?.accountName ? (
-                  <div className="text-xs text-[#9a9ba1]">a/n {String(info.accountName)}</div>
-                ) : null}
+                <div className="tag">{p.name}</div>
+                <div className="mono text-[15px] text-ink break-all">{String(info?.value ?? '')}</div>
+                {info?.accountName ? <div className="tag normal-case lowercase text-[#8a8a82]">a/n {String(info.accountName)}</div> : null}
               </div>
             </div>
           );
@@ -93,10 +78,11 @@ export default function EphemeralView() {
   );
 }
 
-function Centered({ children }) {
+function Centered({ children, tag }) {
   return (
-    <div className="max-w-md mx-auto pt-32 px-6 text-center text-[#5f6066]" data-testid="view-state">
-      {children}
+    <div className="max-w-md mx-auto px-5 pt-36 text-center" data-testid="view-state">
+      {tag && <div className="tag mb-3">Fig. — {tag}</div>}
+      <p className="serif text-lg text-ink leading-snug">{children}</p>
     </div>
   );
 }

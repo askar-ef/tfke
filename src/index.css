@@ -1,146 +1,191 @@
 @import "tailwindcss";
 
-/* Editorial / light design system, modeled on makingsoftware.com:
-   near-white paper, near-black serif prose, one electric-blue accent, a pixel
-   display face for the wordmark, mono for technical labels, dotted-tick rules,
-   generous whitespace. No gradients, glass, or glow. */
+/* Departure Mono — the pixel/monospace display face (self-hosted, OFL).
+   Same family makingsoftware.com uses for its masthead + technical labels. */
+@font-face {
+  font-family: 'Departure Mono';
+  src: url('/fonts/DepartureMono-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Engineering reference-manual aesthetic (after makingsoftware.com):
+   paper white, blueprint dot-grid, EB Garamond serif prose, Departure Mono
+   pixel display + technical labels, one electric-blue accent, hairline frames,
+   sharp corners, rotated FIG tags. Anti-slop: no rounded cards, no shadows,
+   no gradients. */
 @theme {
-  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
-  --font-display: 'Silkscreen', 'Courier New', monospace;
-  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-pixel: 'Departure Mono', ui-monospace, monospace;
+  --font-serif: 'EB Garamond', Georgia, 'Times New Roman', serif;
+  --font-mono: 'Departure Mono', ui-monospace, monospace;
+  --font-sans: 'EB Garamond', Georgia, serif;
 
-  --color-bg: #fbfbf8;
+  --color-paper: #fbfbf7;
+  --color-bg: #fbfbf7;
   --color-surface: #ffffff;
-  --color-surface-2: #f4f4f0;
-  --color-surface-3: #ecece7;
-  --color-border: rgba(20, 21, 26, 0.12);
-  --color-border-hover: rgba(20, 21, 26, 0.24);
-  --color-text: #15161a;
-  --color-text-2: #5f6066;
-  --color-text-3: #9a9ba1;
-  --color-accent: #2d4bff;
-  --color-accent-2: #1f38e0;
-  --color-accent-glow: rgba(45, 75, 255, 0.10);
-  --color-success: #0a8f5b;
-  --color-error: #d23b3b;
+  --color-ink: #121212;
+  --color-text: #121212;
+  --color-text-2: #44443f;
+  --color-text-3: #8a8a82;
+  --color-faint: #8a8a82;
+  --color-line: rgba(18, 18, 18, 0.22);
+  --color-line-soft: rgba(18, 18, 18, 0.10);
+  --color-blue: #2438ff;
+  --color-accent: #2438ff;
+  --color-success: #0a7d4f;
+  --color-error: #cc2b2b;
 }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
-  background-color: var(--color-bg);
-  color: var(--color-text);
+  background-color: var(--color-paper);
+  /* faint blueprint dot grid */
+  background-image: radial-gradient(circle, rgba(18, 18, 18, 0.07) 1px, transparent 1.2px);
+  background-size: 24px 24px;
+  background-position: -1px -1px;
+  color: var(--color-ink);
   font-family: var(--font-serif);
+  font-size: 17px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 .animate-fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
-
-/* No-ops: kill the old glow/float motion from the dark theme. */
 .animate-glow-pulse { display: none !important; }
-.animate-float { animation: none; }
-.animate-slide-in { animation: fadeInUp 0.3s ease-out forwards; }
-.animate-scale-in { animation: fadeInUp 0.3s ease-out forwards; }
+.animate-float, .animate-slide-in, .animate-scale-in { animation: fadeInUp 0.3s ease-out forwards; }
 
-/* ---- Editorial primitives ---- */
+@keyframes blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+.cursor-blink::after { content: '_'; color: var(--color-blue); animation: blink 1.1s step-end infinite; margin-left: 0.05em; }
 
-/* The pixel wordmark, in electric blue. */
-.wordmark {
-  font-family: var(--font-display);
-  color: var(--color-accent);
-  letter-spacing: 0.02em;
-}
+/* ---- Type roles ---- */
+.pixel { font-family: var(--font-pixel); letter-spacing: 0; line-height: 1; }
+.serif { font-family: var(--font-serif); }
+.mono { font-family: var(--font-mono); font-feature-settings: normal; }
 
-/* Serif display headings. */
-.display {
-  font-family: var(--font-serif);
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}
-
-/* Small mono labels (FIG.001-style meta). */
-.label-mono {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
+/* Big electric-blue pixel masthead. */
+.masthead {
+  font-family: var(--font-pixel);
+  color: var(--color-blue);
+  line-height: 0.95;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
-  color: var(--color-text-3);
 }
 
-/* Payment values read as technical data — mono. */
-.mono { font-family: var(--font-mono); }
+/* Serif headings. */
+.head { font-family: var(--font-serif); font-weight: 500; letter-spacing: -0.005em; line-height: 1.08; }
 
-/* Dotted-tick rule divider. */
-.rule {
-  height: 1px;
-  background-image: repeating-linear-gradient(
-    to right,
-    var(--color-border) 0,
-    var(--color-border) 3px,
-    transparent 3px,
-    transparent 8px
-  );
+/* Small uppercase technical labels (FIG.001-style). */
+.tag {
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-faint);
+}
+.label-mono { font-family: var(--font-pixel); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-faint); }
+.wordmark { font-family: var(--font-pixel); color: var(--color-blue); text-transform: uppercase; letter-spacing: 0.04em; }
+.display { font-family: var(--font-serif); font-weight: 500; }
+
+/* Drop cap for the opening serif paragraph. */
+.dropcap::first-letter {
+  font-family: var(--font-serif);
+  float: left;
+  font-size: 3.6em;
+  line-height: 0.72;
+  font-weight: 600;
+  padding: 0.04em 0.1em 0 0;
+  color: var(--color-blue);
+}
+
+/* Dotted-tick rule (the ▦ divider). */
+.rule, .tick-rule {
+  height: 7px;
   border: 0;
+  background-image: repeating-linear-gradient(to right, var(--color-ink) 0 2px, transparent 2px 8px);
+  background-position: 0 50%;
+  background-repeat: repeat-x;
+  background-size: auto 2px;
+  opacity: 0.6;
 }
 
-/* Card surface (redefines the old .glass so existing markup goes light). */
-.glass,
-.card {
+/* Technical figure block: hairline frame + faint dot grid + FIG tag. */
+.figure {
+  position: relative;
+  border: 1px solid var(--color-ink);
+  background-color: var(--color-surface);
+  background-image: radial-gradient(circle, rgba(18, 18, 18, 0.06) 1px, transparent 1.2px);
+  background-size: 18px 18px;
+}
+.fig-tag {
+  position: absolute;
+  top: 10px; right: 10px;
+  font-family: var(--font-pixel);
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-faint);
+}
+.fig-tag-v {
+  position: absolute;
+  writing-mode: vertical-rl;
+  font-family: var(--font-pixel);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-faint);
+}
+
+/* Plain framed surface (sharp corners, hairline, no shadow). Replaces old .glass/.card. */
+.glass, .card {
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  box-shadow: 0 1px 2px rgba(20, 21, 26, 0.04);
+  border: 1px solid var(--color-ink);
 }
-.glass-hover:hover,
-.card-hover:hover {
-  border-color: var(--color-border-hover);
-}
+.glass-hover, .card-hover { transition: background-color 0.12s ease; }
+.card-hover:hover { background: #fcfcf9; }
 
-/* Solid accent — neutralizes the old gradient-text. */
-.gradient-text {
-  background: none;
-  color: var(--color-accent);
-  -webkit-text-fill-color: var(--color-accent);
-}
+.gradient-text { background: none; color: var(--color-blue); -webkit-text-fill-color: var(--color-blue); }
 .gradient-border { position: relative; }
 
-/* Controls */
+/* ---- Controls: sharp, mono-labelled, technical ---- */
 .btn-primary {
-  background: var(--color-accent);
+  background: var(--color-blue);
   color: #fff;
-  font-family: var(--font-sans);
-  font-weight: 600;
-  border: 1px solid var(--color-accent);
-  transition: background 0.15s ease;
+  font-family: var(--font-pixel);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid var(--color-blue);
+  transition: filter 0.12s ease;
 }
-.btn-primary:hover { background: var(--color-accent-2); }
-.btn-primary:disabled { opacity: 0.45; }
+.btn-primary:hover { filter: brightness(1.12); }
+.btn-primary:disabled { opacity: 0.4; }
 
 .btn-ghost {
   background: var(--color-surface);
-  color: var(--color-text);
-  font-family: var(--font-sans);
-  font-weight: 500;
-  border: 1px solid var(--color-border);
-  transition: border-color 0.15s ease;
+  color: var(--color-ink);
+  font-family: var(--font-pixel);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid var(--color-ink);
+  transition: background-color 0.12s ease;
 }
-.btn-ghost:hover { border-color: var(--color-border-hover); }
+.btn-ghost:hover { background: var(--color-blue); color: #fff; border-color: var(--color-blue); }
 
 .field {
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  color: var(--color-text);
-  font-family: var(--font-sans);
+  border: 1px solid var(--color-ink);
+  color: var(--color-ink);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
 }
-.field:focus { outline: none; border-color: var(--color-accent); }
-.field::placeholder { color: var(--color-text-3); }
+.field:focus { outline: 2px solid var(--color-blue); outline-offset: -1px; }
+.field::placeholder { color: var(--color-text-3); font-family: var(--font-mono); }
 
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+::selection { background: var(--color-blue); color: #fff; }

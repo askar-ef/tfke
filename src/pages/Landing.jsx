@@ -1,115 +1,118 @@
 import { Link } from 'react-router-dom';
-import { Zap, Copy, Shield, Globe, ArrowRight, Check } from 'lucide-react';
-import { platforms } from '../data/platforms';
+import { platforms, getPlatform } from '../data/platforms';
 import PlatformIcon from '../components/PlatformIcon';
 
 export default function Landing() {
-  const featuredPlatforms = platforms.slice(0, 8);
-
   return (
-    <div className="min-h-screen">
-      {/* Hero */}
-      <section className="pt-36 pb-20 px-4 sm:px-6">
-        <div className="max-w-3xl mx-auto text-center">
-          <div className="wordmark text-2xl sm:text-3xl mb-6 animate-fade-in-up">Tfke.id</div>
+    <div className="max-w-5xl mx-auto px-5 sm:px-8 pt-28 pb-16">
+      {/* Masthead */}
+      <header className="grid sm:grid-cols-[1fr_auto] gap-6 items-end">
+        <h1 className="masthead text-[15vw] sm:text-[7rem] leading-[0.9] cursor-blink animate-fade-in-up">
+          Tfke<span className="text-ink">.id</span>
+        </h1>
+        <p className="serif text-lg text-[#44443f] max-w-xs sm:text-right leading-snug animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+          A reference for sharing how you get paid. Indonesian bank &amp; e-wallet
+          handoffs, in one link. <span className="italic">Encrypted in your browser.</span>
+        </p>
+      </header>
 
-          <h1
-            className="display text-4xl sm:text-6xl leading-[1.05] mb-6 text-[#15161a] animate-fade-in-up"
-            style={{ animationDelay: '0.1s' }}
-          >
-            Your payment info,<br />
-            <span className="gradient-text">one link away.</span>
-          </h1>
+      <div className="tag mt-5">Edition 01 · 2026 · tfke.id/manual</div>
+      <hr className="rule my-7" />
 
-          <p
-            className="text-lg text-[#5f6066] max-w-xl mx-auto mb-9 leading-relaxed animate-fade-in-up"
-            style={{ animationDelay: '0.2s', fontFamily: 'var(--font-sans)' }}
-          >
-            Put your bank and e-wallet details on one page. Share the link.
-            Others copy with a single tap — no more typing it out.
+      {/* Intro + primary figure */}
+      <section className="grid md:grid-cols-2 gap-10 md:gap-14">
+        <div>
+          <p className="dropcap serif text-[1.2rem] leading-[1.55] text-justify">
+            Ever sent your bank account number three times in one chat because someone
+            mistyped it? Tfke puts your payment details — accounts, e-wallets, handles —
+            on one page behind a single link. The reader taps once to copy. No more
+            reading digits aloud.
+          </p>
+          <p className="serif text-[1.05rem] leading-[1.55] mt-4 text-[#44443f] text-justify">
+            A quick link needs no account and disappears after three days. Sign in to
+            keep a permanent, editable page. Either way, the secret stays in the link —
+            our servers only ever hold ciphertext.
           </p>
 
-          <div
-            className="flex flex-col sm:flex-row items-center justify-center gap-3 animate-fade-in-up"
-            style={{ animationDelay: '0.3s', fontFamily: 'var(--font-sans)' }}
-          >
-            <Link to="/create" className="btn-primary flex items-center gap-2 px-7 py-3.5 rounded-xl">
-              Create now — no account
-              <ArrowRight size={18} />
-            </Link>
-            <Link to="/register" className="btn-ghost flex items-center gap-2 px-7 py-3.5 rounded-xl">
-              Sign in to keep &amp; edit
-            </Link>
+          <div className="flex flex-wrap gap-3 mt-7">
+            <Link to="/create" className="btn-primary px-5 py-3">Create now →</Link>
+            <Link to="/register" className="btn-ghost px-5 py-3">Sign in to keep it</Link>
           </div>
-          <p className="label-mono mt-5">Instant link · no email · expires in 3 days</p>
+          <div className="tag mt-3">No account · no email · expires in 3 days</div>
         </div>
-      </section>
-      <div className="max-w-5xl mx-auto px-6"><hr className="rule" /></div>
 
-      {/* Platforms */}
-      <section className="py-16 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto">
-          <p className="label-mono text-center mb-8 animate-fade-in-up">Supported platforms</p>
-          <div className="flex flex-wrap justify-center gap-4">
-            {featuredPlatforms.map((p, i) => (
-              <div key={p.id} className="animate-fade-in-up" style={{ animationDelay: `${i * 0.05}s` }}>
-                <PlatformIcon platformId={p.id} size={44} />
-              </div>
-            ))}
-            <div className="w-11 h-11 rounded-xl card flex items-center justify-center text-xs text-[#5f6066] font-medium animate-fade-in-up" style={{ animationDelay: '0.4s', fontFamily: 'var(--font-sans)' }}>
-              +6
+        {/* FIG.001 — a sample page rendered as a technical figure */}
+        <figure className="figure p-6 sm:p-8 self-start">
+          <span className="fig-tag">Fig. 001</span>
+          <span className="fig-tag-v" style={{ left: 10, bottom: 16 }}>[ share link ]</span>
+          <div className="pl-3">
+            <div className="tag">tfke.id/u/askar</div>
+            <div className="head text-2xl mt-1 mb-5">Askar</div>
+            <div className="space-y-px border-t border-b border-ink">
+              {['bca', 'dana', 'gopay'].map((id) => {
+                const p = getPlatform(id);
+                const val = id === 'bca' ? '1234567890' : '0812-3456-7890';
+                return (
+                  <div key={id} className="flex items-center gap-3 py-3 border-t border-line-soft first:border-t-0">
+                    <PlatformIcon platformId={id} size={34} />
+                    <div className="min-w-0">
+                      <div className="tag">{p.name}</div>
+                      <div className="mono text-[15px] text-ink">{val}</div>
+                    </div>
+                    <div className="ml-auto tag">copy ⧉</div>
+                  </div>
+                );
+              })}
             </div>
           </div>
-        </div>
+        </figure>
       </section>
 
-      {/* Features */}
-      <section className="py-20 px-4 sm:px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-14">
-            <h2 className="display text-3xl sm:text-4xl mb-3 text-[#15161a]">How it works</h2>
-            <p className="text-[#5f6066]" style={{ fontFamily: 'var(--font-sans)' }}>Three steps to share your payment info</p>
-          </div>
+      <hr className="rule my-10" />
 
-          <div className="grid sm:grid-cols-3 gap-5">
-            {[
-              { icon: Shield, n: '001', title: 'Create', desc: 'Add your bank and e-wallet details. No account needed for a quick link.' },
-              { icon: Copy, n: '002', title: 'Encrypt', desc: 'Your details are encrypted in your browser before they ever leave it.' },
-              { icon: Globe, n: '003', title: 'Share', desc: 'Send the link. Others open it and copy your details in one tap.' },
-            ].map((f, i) => (
-              <div key={i} className="card rounded-2xl p-7 animate-fade-in-up" style={{ animationDelay: `${i * 0.08}s` }}>
-                <div className="flex items-center justify-between mb-5">
-                  <f.icon size={22} className="text-[#2d4bff]" />
-                  <span className="label-mono">FIG.{f.n}</span>
-                </div>
-                <h3 className="display text-lg mb-2 text-[#15161a]">{f.title}</h3>
-                <p className="text-sm text-[#5f6066] leading-relaxed" style={{ fontFamily: 'var(--font-sans)' }}>{f.desc}</p>
+      {/* FIG.002 — supported platforms, as a specimen plate */}
+      <section>
+        <div className="flex items-baseline justify-between mb-4">
+          <h2 className="head text-xl">Supported platforms</h2>
+          <span className="tag">Fig. 002 · {platforms.length} marks</span>
+        </div>
+        <div className="figure">
+          <div className="grid grid-cols-3 sm:grid-cols-5">
+            {platforms.map((p) => (
+              <div
+                key={p.id}
+                className="flex flex-col items-center gap-2 p-4 border-r border-b"
+                style={{ borderColor: 'var(--color-line-soft)' }}
+              >
+                <PlatformIcon platformId={p.id} size={40} />
+                <span className="tag text-center leading-tight">{p.name}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20 px-4 sm:px-6">
-        <div className="max-w-3xl mx-auto card rounded-2xl p-10 sm:p-14 text-center">
-          <h2 className="display text-3xl sm:text-4xl mb-3 text-[#15161a]">Ready to simplify?</h2>
-          <p className="text-[#5f6066] mb-8 max-w-lg mx-auto" style={{ fontFamily: 'var(--font-sans)' }}>
-            Stop typing payment details over and over again.
-          </p>
-          <Link to="/create" className="btn-primary inline-flex items-center gap-2 px-7 py-3.5 rounded-xl">
-            Create your link
-            <ArrowRight size={18} />
-          </Link>
-        </div>
+      <hr className="rule my-10" />
+
+      {/* How it works — numbered manual steps */}
+      <section className="grid sm:grid-cols-3 gap-0 border border-ink">
+        {[
+          { n: '01', t: 'Write', d: 'Add your accounts and e-wallet handles. No account needed for a quick link.' },
+          { n: '02', t: 'Encrypt', d: 'Your details are encrypted in your browser. The key lives only in the link.' },
+          { n: '03', t: 'Share', d: 'Send the link. The reader opens it and copies each detail in one tap.' },
+        ].map((s, i) => (
+          <div key={s.n} className={`p-6 ${i !== 2 ? 'sm:border-r border-line-soft' : ''} ${i !== 0 ? 'border-t sm:border-t-0 border-line-soft' : ''}`}>
+            <div className="masthead text-3xl mb-3">{s.n}</div>
+            <h3 className="head text-lg mb-1">{s.t}</h3>
+            <p className="serif text-[#44443f] leading-snug">{s.d}</p>
+          </div>
+        ))}
       </section>
 
-      {/* Footer */}
-      <footer className="py-8 px-4 sm:px-6 border-t border-[rgba(20,21,26,0.10)]">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <span className="wordmark text-base">Tfke.id</span>
-          <p className="label-mono">Share payment info, made simple.</p>
-        </div>
+      {/* Colophon */}
+      <footer className="mt-10 flex flex-col sm:flex-row justify-between gap-2 tag">
+        <span className="wordmark text-sm normal-case">Tfke.id</span>
+        <span>© 2026 · encrypted in your browser · made in Indonesia</span>
       </footer>
     </div>
   );

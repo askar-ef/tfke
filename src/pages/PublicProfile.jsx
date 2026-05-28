@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Copy, Check, ArrowLeft } from 'lucide-react';
 import InfoCard from '../components/InfoCard';
 import { getUser } from '../data/mockUsers';
 import { getPlatform } from '../data/platforms';
@@ -19,20 +18,18 @@ export default function PublicProfile() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="w-7 h-7 border-2 border-[#2d4bff] border-t-transparent rounded-full animate-spin" />
+        <div className="tag">decrypting…</div>
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4 text-center" style={{ fontFamily: 'var(--font-sans)' }}>
+      <div className="min-h-screen flex items-center justify-center px-5 text-center">
         <div>
-          <h1 className="display text-2xl mb-2 text-[#15161a]">User not found</h1>
-          <p className="text-[#5f6066] mb-6">This page doesn’t exist.</p>
-          <Link to="/" className="btn-ghost inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm">
-            <ArrowLeft size={16} /> Go home
-          </Link>
+          <div className="tag mb-3">Fig. — 404</div>
+          <h1 className="head text-3xl mb-4">User not found</h1>
+          <Link to="/" className="btn-ghost inline-block px-6 py-2.5">Go home</Link>
         </div>
       </div>
     );
@@ -40,10 +37,7 @@ export default function PublicProfile() {
 
   const handleCopyAll = async () => {
     const text = user.infos
-      .map((i) => {
-        const platform = getPlatform(i.platformId);
-        return `${platform.name}: ${i.value}${i.accountName ? ` (${i.accountName})` : ''}`;
-      })
+      .map((i) => `${getPlatform(i.platformId).name}: ${i.value}${i.accountName ? ` (${i.accountName})` : ''}`)
       .join('\n');
     try {
       await navigator.clipboard.writeText(text);
@@ -55,60 +49,41 @@ export default function PublicProfile() {
   };
 
   return (
-    <div className="min-h-screen pt-28 pb-12 px-4 sm:px-6">
-      <div className="max-w-2xl mx-auto">
-        <div className="label-mono mb-3">FIG · shared payment info</div>
-        <div className="card rounded-2xl p-6 sm:p-8 mb-6">
-          <div className="flex items-center gap-5">
-            <div
-              className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl flex items-center justify-center text-2xl sm:text-3xl font-bold text-white shrink-0 mono"
-              style={{ backgroundColor: '#2d4bff' }}
-            >
-              {user.avatar}
-            </div>
-            <div>
-              <h1 className="display text-2xl text-[#15161a]">{user.displayName}</h1>
-              <p className="text-[#9a9ba1] text-sm mono">@{user.username}</p>
-              {user.bio && <p className="text-[#5f6066] text-sm mt-2" style={{ fontFamily: 'var(--font-sans)' }}>{user.bio}</p>}
-            </div>
-          </div>
-
-          {user.infos.length > 0 && (
-            <button
-              onClick={handleCopyAll}
-              style={{ fontFamily: 'var(--font-sans)' }}
-              className={`mt-6 w-full py-3 rounded-lg font-medium text-sm transition-colors flex items-center justify-center gap-2 border ${
-                copied
-                  ? 'bg-[#0a8f5b]/10 text-[#0a8f5b] border-[#0a8f5b]/20'
-                  : 'bg-white text-[#15161a] border-[rgba(20,21,26,0.12)] hover:border-[rgba(20,21,26,0.24)]'
-              }`}
-            >
-              {copied ? <Check size={16} /> : <Copy size={16} />}
-              {copied ? 'All copied!' : 'Copy all'}
-            </button>
-          )}
+    <div className="max-w-2xl mx-auto px-5 sm:px-8 pt-24 pb-16">
+      <div className="tag">tfke.id/u/{user.username}</div>
+      <div className="flex items-start gap-4 mt-2">
+        <div className="w-14 h-14 border border-ink bg-white flex items-center justify-center pixel text-blue text-2xl shrink-0">
+          {String(user.avatar || user.displayName?.[0] || '?').toUpperCase()}
         </div>
-
-        <hr className="rule mb-6" />
-
-        {user.infos.length === 0 ? (
-          <div className="card rounded-2xl p-12 text-center text-[#9a9ba1]" style={{ fontFamily: 'var(--font-sans)' }}>
-            No payment info yet
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {user.infos.map((info) => (
-              <InfoCard key={info.id} info={info} />
-            ))}
-          </div>
-        )}
-
-        <div className="mt-12 text-center">
-          <Link to="/" className="label-mono hover:text-[#2d4bff] transition-colors">
-            Powered by Tfke.id
-          </Link>
+        <div>
+          <h1 className="head text-4xl leading-none">{user.displayName}</h1>
+          <p className="tag mt-1">@{user.username}</p>
         </div>
       </div>
+      {user.bio && <p className="serif text-[#44443f] mt-3">{user.bio}</p>}
+
+      {user.infos.length > 0 && (
+        <button onClick={handleCopyAll} className="btn-ghost w-full py-2.5 mt-5">
+          {copied ? 'All copied!' : 'Copy all'}
+        </button>
+      )}
+
+      <hr className="rule my-7" />
+      <div className="tag mb-3">Fig. 001 · payment details</div>
+
+      {user.infos.length === 0 ? (
+        <div className="figure p-10 text-center tag">No payment info yet</div>
+      ) : (
+        <div className="space-y-px">
+          {user.infos.map((info) => (
+            <InfoCard key={info.id} info={info} />
+          ))}
+        </div>
+      )}
+
+      <footer className="mt-10 tag text-center">
+        <Link to="/" className="hover:text-blue">Powered by Tfke.id</Link>
+      </footer>
     </div>
   );
 }
