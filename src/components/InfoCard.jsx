@@ -1,15 +1,18 @@
 import { useState } from 'react';
-import { Copy, Check, Share2 } from 'lucide-react';
+import { Copy, Check } from 'lucide-react';
 import PlatformIcon from './PlatformIcon';
 import { platforms } from '../data/platforms';
 
 export default function InfoCard({ info, showLabel = true }) {
   const [copied, setCopied] = useState(false);
-  const platform = platforms.find(p => p.id === info.platformId);
+  // Handle both snake_case (API) and camelCase (legacy)
+  const platformId = info.platform_id || info.platformId;
+  const accountName = info.account_name || info.accountName;
+  const platform = platforms.find(p => p.id === platformId);
 
   const handleCopy = async () => {
-    const textToCopy = info.accountName
-      ? `${info.value} (${info.accountName})`
+    const textToCopy = accountName
+      ? `${info.value} (${accountName})`
       : info.value;
     await navigator.clipboard.writeText(textToCopy);
     setCopied(true);
@@ -25,7 +28,7 @@ export default function InfoCard({ info, showLabel = true }) {
       style={{ animationDelay: `${Math.random() * 0.3}s` }}
     >
       <div className="flex items-center gap-4">
-        <PlatformIcon platformId={info.platformId} size={48} />
+        <PlatformIcon platformId={platformId} size={48} />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <span className="font-semibold text-sm">{platform.name}</span>
@@ -38,8 +41,8 @@ export default function InfoCard({ info, showLabel = true }) {
           <div className="font-mono text-lg font-bold mt-0.5 truncate">
             {info.value}
           </div>
-          {info.accountName && (
-            <div className="text-xs text-gray-500 mt-0.5">{info.accountName}</div>
+          {accountName && (
+            <div className="text-xs text-gray-500 mt-0.5">{accountName}</div>
           )}
         </div>
         <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${

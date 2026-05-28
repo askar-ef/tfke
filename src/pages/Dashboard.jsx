@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Link2, ExternalLink, Trash2, User, Edit3 } from 'lucide-react';
+import { Plus, Link2, ExternalLink, Trash2, Edit3 } from 'lucide-react';
 import InfoCard from '../components/InfoCard';
 import AddInfoModal from '../components/AddInfoModal';
-import { addInfo, removeInfo, updateUser } from '../data/mockUsers';
+import { users } from '../data/api';
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -11,13 +11,40 @@ export default function Dashboard() {
   const [copiedLink, setCopiedLink] = useState(false);
   const [editingBio, setEditingBio] = useState(false);
   const [bio, setBio] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  const stored = localStorage.getItem('tfke_user');
+  const storedUser = stored ? JSON.parse(stored) : null;
+
   useEffect(() => {
-    const u = localStorage.getItem('tfke_user');
-    if (!u) { navigate('/login'); return; }
-    setUser(JSON.parse(u));
+    if (!storedUser) {
+      navigate('/login');
+      return;
+    }
+    fetchUser();
   }, [navigate]);
+
+  const fetchUser = async () => {
+    try {
+      const data = await users.me(storedUser.username);
+      setUser(data);
+      setBio(data.bio || '');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   if (!user) return null;
 
@@ -29,34 +56,43 @@ export default function Dashboard() {
     setTimeout(() => setCopiedLink(false), 2000);
   };
 
-  const handleAddInfo = (info) => {
-    const newInfo = addInfo(user.username, info);
-    if (newInfo) {
-      const updated = { ...user, infos: [...user.infos, newInfo] };
-      setUser(updated);
-      localStorage.setItem('tfke_user', JSON.stringify(updated));
+  const handleAddInfo = async (info) => {
+    try {
+      const newInfo = await users.addInfo(user.username, info);
+      setUser({ ...user, infos: [...user.infos, newInfo] });
+    } catch (err) {
+      setError(err.message);
     }
   };
 
-  const handleRemoveInfo = (infoId) => {
-    if (removeInfo(user.username, infoId)) {
-      const updated = { ...user, infos: user.infos.filter(i => i.id !== infoId) };
-      setUser(updated);
-      localStorage.setItem('tfke_user', JSON.stringify(updated));
+  const handleRemoveInfo = async (infoId) => {
+    try {
+      await users.removeInfo(user.username, infoId);
+      setUser({ ...user, infos: user.infos.filter(i => i.id !== infoId) });
+    } catch (err) {
+      setError(err.message);
     }
   };
 
-  const handleSaveBio = () => {
-    updateUser(user.username, { bio });
-    const updated = { ...user, bio };
-    setUser(updated);
-    localStorage.setItem('tfke_user', JSON.stringify(updated));
-    setEditingBio(false);
+  const handleSaveBio = async () => {
+    try {
+      await users.update(user.username, { bio });
+      setUser({ ...user, bio });
+      setEditingBio(false);
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
     <div className="min-h-screen pt-24 pb-12 px-4 sm:px-6">
       <div className="max-w-3xl mx-auto">
+        {error && (
+          <div className="mb-4 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+            {error}
+          </div>
+        )}
+
         {/* Profile Header */}
         <div className="glass rounded-3xl p-6 sm:p-8 mb-6 animate-fade-in-up">
           <div className="flex items-start gap-5">
@@ -64,9 +100,9 @@ export default function Dashboard() {
               {user.avatar}
             </div>
             <div className="flex-1 min-w-0">
-              <h1 className="text-2xl font-bold font-[Space_Grotesk]">{user.displayName}</h1>
+              <h1 className="text-2xl font-bold font-[Space_Grotesk]">{user.display_name}</h1>
               <p className="text-gray-500 text-sm">@{user.username}</p>
-              
+
               {editingBio ? (
                 <div className="mt-3 flex gap-2">
                   <input

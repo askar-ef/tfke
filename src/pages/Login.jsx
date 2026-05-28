@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Zap, Eye, EyeOff, ArrowRight } from 'lucide-react';
-import { getUser } from '../data/mockUsers';
+import { auth } from '../data/api';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -11,27 +11,21 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    setTimeout(() => {
-      const user = getUser(username);
-      if (!user) {
-        setError('User not found');
-        setLoading(false);
-        return;
-      }
-      if (password !== 'password' && password !== 'askar123') {
-        setError('Wrong password');
-        setLoading(false);
-        return;
-      }
-      localStorage.setItem('tfke_user', JSON.stringify(user));
+    try {
+      const res = await auth.login({ username, password });
+      localStorage.setItem('tfke_token', res.token);
+      localStorage.setItem('tfke_user', JSON.stringify(res.user));
       navigate('/dashboard');
-      window.location.reload();
-    }, 500);
+    } catch (err) {
+      setError(err.message || 'Login failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

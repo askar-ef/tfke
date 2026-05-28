@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Zap, Menu, X, User, LogOut, LayoutDashboard } from 'lucide-react';
+import { Zap, Menu, X, LayoutDashboard, LogOut } from 'lucide-react';
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -13,6 +13,7 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = () => {
+    localStorage.removeItem('tfke_token');
     localStorage.removeItem('tfke_user');
     setUser(null);
     navigate('/');

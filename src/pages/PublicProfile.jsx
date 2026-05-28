@@ -2,19 +2,29 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Zap, Copy, Check, ArrowLeft } from 'lucide-react';
 import InfoCard from '../components/InfoCard';
-import { getUser } from '../data/mockUsers';
+import { users } from '../data/api';
 
 export default function PublicProfile() {
   const { username } = useParams();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const u = getUser(username);
-    setUser(u);
-    setLoading(false);
+    fetchUser();
   }, [username]);
+
+  const fetchUser = async () => {
+    try {
+      const data = await users.get(username);
+      setUser(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -44,8 +54,7 @@ export default function PublicProfile() {
 
   const handleCopyAll = async () => {
     const text = user.infos.map(i => {
-      const platform = require('../data/platforms').platforms.find(p => p.id === i.platformId);
-      return `${platform?.name || i.platformId}: ${i.value}${i.accountName ? ` (${i.accountName})` : ''}`;
+      return `${i.platform_id}: ${i.value}${i.account_name ? ` (${i.account_name})` : ''}`;
     }).join('\n');
     await navigator.clipboard.writeText(text);
     setCopied(true);
@@ -62,7 +71,7 @@ export default function PublicProfile() {
               {user.avatar}
             </div>
             <div>
-              <h1 className="text-2xl font-bold font-[Space_Grotesk]">{user.displayName}</h1>
+              <h1 className="text-2xl font-bold font-[Space_Grotesk]">{user.display_name}</h1>
               <p className="text-gray-500 text-sm">@{user.username}</p>
               {user.bio && <p className="text-gray-400 text-sm mt-2">{user.bio}</p>}
             </div>
