@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
-import { createUser } from '../data/mockUsers';
+import { auth } from '../data/api';
 
 export default function Register() {
   const [displayName, setDisplayName] = useState('');
@@ -12,17 +12,30 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
-    setTimeout(() => {
-      if (username.length < 3) { setError('Username must be at least 3 characters'); setLoading(false); return; }
-      const user = createUser(username, displayName || username, password);
-      localStorage.setItem('tfke_user', JSON.stringify(user));
+    if (username.length < 3) {
+      setError('Username must be at least 3 characters');
+      setLoading(false);
+      return;
+    }
+    try {
+      await auth.register({
+        username,
+        display_name: displayName || username,
+        password,
+      });
+      const loginRes = await auth.login({ username, password });
+      localStorage.setItem('tfke_token', loginRes.token);
+      localStorage.setItem('tfke_user', JSON.stringify(loginRes.user));
       navigate('/dashboard');
-      window.location.reload();
-    }, 500);
+    } catch (err) {
+      setError(err.message || 'Registration failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

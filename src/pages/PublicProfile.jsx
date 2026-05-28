@@ -1,24 +1,34 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import InfoCard from '../components/InfoCard';
-import { getUser } from '../data/mockUsers';
-import { getPlatform } from '../data/platforms';
+import { users } from '../data/api';
 
 export default function PublicProfile() {
   const { username } = useParams();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    setUser(getUser(username));
-    setLoading(false);
+    fetchUser();
   }, [username]);
+
+  const fetchUser = async () => {
+    try {
+      const data = await users.get(username);
+      setUser(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="tag">decrypting…</div>
+        <div className="tag">loading…</div>
       </div>
     );
   }
@@ -37,7 +47,12 @@ export default function PublicProfile() {
 
   const handleCopyAll = async () => {
     const text = user.infos
-      .map((i) => `${getPlatform(i.platformId).name}: ${i.value}${i.accountName ? ` (${i.accountName})` : ''}`)
+      .map((i) => {
+        const platformName = i.platform_id || i.platformId;
+        const val = i.value;
+        const an = i.account_name || i.accountName;
+        return `${platformName}: ${val}${an ? ` (${an})` : ''}`;
+      })
       .join('\n');
     try {
       await navigator.clipboard.writeText(text);
@@ -53,10 +68,10 @@ export default function PublicProfile() {
       <div className="tag">tfke.id/u/{user.username}</div>
       <div className="flex items-start gap-4 mt-2">
         <div className="w-14 h-14 border border-ink bg-white flex items-center justify-center pixel text-blue text-2xl shrink-0">
-          {String(user.avatar || user.displayName?.[0] || '?').toUpperCase()}
+          {String(user.avatar || user.display_name?.[0] || '?').toUpperCase()}
         </div>
         <div>
-          <h1 className="head text-4xl leading-none">{user.displayName}</h1>
+          <h1 className="head text-4xl leading-none">{user.display_name}</h1>
           <p className="tag mt-1">@{user.username}</p>
         </div>
       </div>

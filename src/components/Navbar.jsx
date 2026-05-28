@@ -13,6 +13,7 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = () => {
+    localStorage.removeItem('tfke_token');
     localStorage.removeItem('tfke_user');
     setUser(null);
     navigate('/');
