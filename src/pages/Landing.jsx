@@ -11,12 +11,12 @@ export default function Landing() {
           Tfke<span className="text-ink">.id</span>
         </h1>
         <p className="serif text-lg text-[#44443f] max-w-xs sm:text-right leading-snug animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-          A reference for sharing how you get paid. Indonesian bank &amp; e-wallet
-          handoffs, in one link. <span className="italic">Encrypted in your browser.</span>
+          The easiest way to share your payment details. Bank accounts, e-wallets,
+          and handles — all in one link. <span className="italic">Encrypted in your browser.</span>
         </p>
       </header>
 
-      <div className="tag mt-5">Edition 01 · 2026 · tfke.id/manual</div>
+      <div className="tag mt-5">Edition 01 · 2026 · tfke.id</div>
       <hr className="rule my-7" />
 
       {/* Intro + primary figure */}
@@ -73,8 +73,7 @@ export default function Landing() {
       {/* FIG.002 — supported platforms, as a specimen plate */}
       <section>
         <div className="flex items-baseline justify-between mb-4">
-          <h2 className="head text-xl">Supported platforms</h2>
-          <span className="tag">Fig. 002 · {platforms.length} marks</span>
+          <h2 className="head text-xl">Platforms</h2>
         </div>
         <div className="figure">
           <div className="grid grid-cols-3 sm:grid-cols-5">
